@@ -107,3 +107,32 @@ Additionally, always read the directory-specific instructions when working in th
 - [pydantic_ai_slim/pydantic_ai/AGENTS.md](pydantic_ai_slim/pydantic_ai/AGENTS.md)
 - [pydantic_ai_slim/pydantic_ai/models/AGENTS.md](pydantic_ai_slim/pydantic_ai/models/AGENTS.md)
 - [tests/AGENTS.md](tests/AGENTS.md)
+
+## Cursor Cloud specific instructions
+
+### Environment
+
+- **Python 3.12** is the default runtime; `uv` manages the venv and lockfile.
+- `uv` and `pre-commit` must be on `$PATH`. If `uv` is missing, install via `curl -LsSf https://astral.sh/uv/install.sh | sh` and ensure `$HOME/.local/bin` is on `PATH`. Install pre-commit via `uv tool install pre-commit`.
+- The VM may set `core.hooksPath` in git config, which blocks `pre-commit install`. Run `git config --unset-all core.hooksPath` before `make install` if you hit that error.
+
+### Key commands
+
+All commands are documented in the `Makefile`. The most common ones:
+
+| Task | Command |
+|---|---|
+| Install deps | `make install` |
+| Lint | `make lint` |
+| Format | `make format` |
+| Typecheck | `make typecheck` |
+| Run tests | `make test` |
+| Build docs | `make docs` |
+| Serve docs | `make docs-serve` |
+
+### Testing notes
+
+- **No external services or API keys are required** to run the test suite. All LLM API calls are replayed from VCR cassettes committed under `tests/cassettes/` and `tests/models/cassettes/`.
+- `pydantic_ai.models.ALLOW_MODEL_REQUESTS = False` is set globally in `conftest.py`, preventing accidental real API calls.
+- Tests use `pytest-xdist` (`-n auto`) for parallel execution by default via `make test`.
+- Some tests are skipped when specific API keys are absent; this is expected behavior.
